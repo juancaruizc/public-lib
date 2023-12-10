@@ -15,11 +15,11 @@ export default function App() {
       onClick={() => {
         defaultEditor?.chain().focus().run();
       }}
-      className="relative flex min-h-screen w-full cursor-text flex-col items-center p-32"
+      className="relative flex flex-col items-center w-full min-h-screen p-32 cursor-text"
     >
-      <div className=" w-full max-w-screen-lg">
+      <div className="w-full max-w-screen-lg ">
         <h1 className="mb-4 text-6xl font-bold">
-          Introducing our awesome Editor!
+          Test documment
         </h1>
         <p className="mb-2">
           Check out the features below or create a new document to get started.

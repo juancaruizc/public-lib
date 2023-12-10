@@ -1,8 +1,14 @@
 import StarterKit from "@tiptap/starter-kit";
 import Placeholder from "@tiptap/extension-placeholder";
+import AI from '@tiptap-pro/extension-ai'
 import SlashCommand from "./slash-command";
 
 export const TipTapEditorExtensions = [
+  AI.configure({
+    appId: '9drq9ekx',
+    token: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MDE5MDQzMjUsIm5iZiI6MTcwMTkwNDMyNSwiZXhwIjoxNzAxOTkwNzI1LCJpc3MiOiJodHRwczovL2NvbGxhYi50aXB0YXAuZGV2IiwiYXVkIjoiMzkwY2JjZWEtNGVmYS00Y2U0LTg2YmItZDE0MzgzMTQ5NGQ0In0.KkePSSsq6QDpgV8ucnJbatiZ09SrnmDzWQTgEZr3sEQ',
+    autocompletion: true
+  }),
   StarterKit.configure({
     bulletList: {
       HTMLAttributes: {

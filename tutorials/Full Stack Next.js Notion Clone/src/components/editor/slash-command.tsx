@@ -63,7 +63,12 @@ const Command = Extension.create({
   },
 });
 
+
 const getSuggestionItems = ({ query }: { query: string }) => {
+  const customPrompt = "create a blog post about zoe"; 
+  // const [customPrompt, setCustomPrompt] = useState("");
+
+
   return [
     {
       title: "Heading 1",
@@ -149,6 +154,68 @@ const getSuggestionItems = ({ query }: { query: string }) => {
         editor.chain().focus().deleteRange(range).toggleOrderedList().run();
       },
     },
+    {
+      title: "Blog Post",
+      description: "Create a blog post with AI.",
+      icon: <ListOrdered size={18} />, // Replace YourIconComponent with your actual icon component
+      command: ({ editor, range }: Command) => {
+        editor?.chain().focus().aiTextPrompt({text: customPrompt}).run()
+      },
+    },
+    {
+      title: "Short Story",
+      description: "Create a short story with AI.",
+      icon: <ListOrdered size={18} />, // Replace YourIconComponent with your actual icon component
+      command: ({ editor, range }: Command) => {
+        const customPrompt = "create a short story about zoe";
+        editor?.chain().focus().aiTextPrompt({text: customPrompt}).run()
+      },
+    },
+    {
+      title: "Essay",
+      description: "Create an essay with AI.",
+      icon: <ListOrdered size={18} />, // Replace YourIconComponent with your actual icon component
+      command: ({ editor, range }: Command) => {
+        const customPrompt = "write an essay about zoe";
+        editor?.chain().focus().aiTextPrompt({text: customPrompt}).run()
+      },
+    },
+    {
+      title: "Job Description",
+      description: "Create a job description with AI.",
+      icon: <ListOrdered size={18} />, // Replace YourIconComponent with your actual icon component
+      command: ({ editor, range }: Command) => {
+        const customPrompt = "create a job description for a software engineer";
+        editor?.chain().focus().aiTextPrompt({text: customPrompt}).run()
+      },
+    },
+    {
+      title: "Instagram Caption",
+      description: "Create an Instagram caption with AI.",
+      icon: <ListOrdered size={18} />, // Replace YourIconComponent with your actual icon component
+      command: ({ editor, range }: Command) => {
+        const customPrompt = "create an Instagram caption about a beach vacation";
+        editor?.chain().focus().aiTextPrompt({text: customPrompt}).run()
+      },
+    },
+    {
+      title: "Content Lists",
+      description: "Create a content list with AI.",
+      icon: <ListOrdered size={18} />, // Replace YourIconComponent with your actual icon component
+      command: ({ editor, range }: Command) => {
+        const customPrompt = "create a list of content ideas for a tech blog";
+        editor?.chain().focus().aiTextPrompt({text: customPrompt}).run()
+      },
+    },
+    {
+      title: "Tweet Composer",
+      description: "Compose a tweet with AI.",
+      icon: <ListOrdered size={18} />, // Replace YourIconComponent with your actual icon component
+      command: ({ editor, range }: Command) => {
+        const customPrompt = "compose a tweet about the latest tech news";
+        editor?.chain().focus().aiTextPrompt({text: customPrompt}).run()
+      },
+    }
   ].filter((item) => {
     if (typeof query === "string" && query.length > 0) {
       return item.title.toLowerCase().includes(query.toLowerCase());
@@ -175,13 +242,21 @@ export const updateScrollView = (container: HTMLElement, item: HTMLElement) => {
 const CommandList = ({
   items,
   command,
+  renderInput,
+  onEnter,
 }: {
   items: CommandItemProps[];
   command: any;
+  renderInput?: boolean;
+  onEnter?: (text: string) => void;
 }) => {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const commandListContainer = useRef<HTMLDivElement>(null);
   const selectedButtonRef = useRef<HTMLButtonElement>(null);
+  const [inputText, setInputText] = useState("");
+  const [customPrompt, setCustomPrompt] = useState(""); // Moved here
+  const [showInput, setShowInput] = useState(false);
+  const [hoveredItem, setHoveredItem] = useState<string | null>(null); // Added this line
 
   const selectItem = useCallback(
     (index: number) => {
@@ -192,7 +267,6 @@ const CommandList = ({
     },
     [command, items]
   );
-
   useEffect(() => {
     const navigationKeys = ["ArrowUp", "ArrowDown", "Enter"];
     const onKeyDown = (e: KeyboardEvent) => {
@@ -241,32 +315,50 @@ const CommandList = ({
   }, [selectedIndex, items]);
 
   return items.length > 0 ? (
+    
     <div
       ref={commandListContainer}
-      className="z-50 h-auto max-h-[330px] w-72 overflow-y-auto scroll-smooth rounded-md border border-gray-200 bg-white px-1 py-2 shadow-md transition-all"
+      className="relative z-50 h-auto max-h-[330px] w-72 overflow-y-auto scroll-smooth rounded-md border border-gray-200 bg-white px-1 py-2 shadow-md transition-all"
     >
+      {hoveredItem === "Blog Post" && (
+        <div>
+             <input
+               type="text"
+               placeholder="Enter custom prompt"
+               className="absolute right-0 w-48 p-2 ml-4 bg-white border border-gray-200 rounded-md"
+               onChange={(e) => setCustomPrompt(e.target.value)}
+             />
+             </div>
+           )}
+           
       {items.map((item: CommandItemProps, index: number) => {
         const isSelected = index === selectedIndex;
         return (
-          <button
-            ref={isSelected ? selectedButtonRef : null}
-            className={`flex w-full items-center space-x-2 rounded-md px-2 py-1 text-left text-sm text-gray-900 hover:bg-gray-100 ${
-              isSelected ? "bg-gray-100 text-gray-900" : ""
-            }`}
-            key={index}
-            onClick={() => selectItem(index)}
-          >
-            <div className="flex h-10 w-10 items-center justify-center rounded-md border border-gray-200 bg-white">
-              {item.icon}
-            </div>
-            <div>
-              <p className="font-medium">{item.title}</p>
-              <p className="text-xs text-gray-500">{item.description}</p>
-            </div>
-          </button>
+          <div key={index}>
+            <button
+              ref={isSelected ? selectedButtonRef : null}
+              className={`flex w-full items-center space-x-2 rounded-md px-2 py-1 text-left text-sm text-gray-900 hover:bg-gray-100 ${
+                isSelected ? "bg-gray-100 text-gray-900" : ""
+              }`}
+              key={index}
+              onClick={() => selectItem(index)}
+              onMouseEnter={() => setHoveredItem(item.title)}
+              onMouseLeave={() => setHoveredItem(null)}
+            >
+              <div className="flex items-center justify-center w-10 h-10 bg-white border border-gray-200 rounded-md">
+                {item.icon}
+              </div>
+              <div className="flex-grow">
+                <p className="font-medium">{item.title}</p>
+                <p className="text-xs text-gray-500">{item.description}</p>
+              </div>
+            </button>
+           
+          </div>
         );
       })}
     </div>
+    
   ) : null;
 };
 
